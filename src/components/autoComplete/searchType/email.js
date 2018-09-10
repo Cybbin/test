@@ -1,3 +1,4 @@
+import { checkMail } from '@/assets/common/validate/index.js'
 export default {
   list: [
     {
@@ -23,6 +24,10 @@ export default {
     {
       domain: '163',
       suffix: ['com']
+    },
+    {
+      domain: 'oneplus',
+      suffix: ['com', 'cn', 'net']
     }
   ],
   // 搜索
@@ -67,14 +72,19 @@ export default {
     }
     // 渲染提示结果列表
     resultList.forEach(function (ele, index) {
-      that.filteredList[index] = prefix + ele
+      // that.filteredList[index] = prefix + ele
+      that.filteredList[index] = {
+        prefix: prefix,
+        suffix: ele
+      }
     })
     // 只显示 showNum 个选项
     if (that.filteredList.length > that.showNum) {
       that.filteredList = that.filteredList.slice(0, that.showNum)
     // 完整输入时提示框消失
     } else if (that.filteredList.length === 1) {
-      if (val === that.filteredList[0]) {
+      let filter = that.filteredList[0].prefix + that.filteredList[0].suffix
+      if (val === filter) {
         that.searching = false
         return
       }
@@ -101,7 +111,11 @@ export default {
       if (i >= showNum) break
       defaultList.push('@' + that.list[i].domain + '.' + that.list[i].suffix[0])
     }
-    console.log(defaultList)
     return defaultList
-  }
+  },
+  // 判断是否可订阅
+  canSubscribe: function (val) {
+    return val.indexOf('@') > -1
+  },
+  checkFn: checkMail
 }

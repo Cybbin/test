@@ -1,14 +1,14 @@
 <template>
-  <div class="mailContainer">
-    <div class="mail" :class="{'mail_active': canSubscribe}">
-      <input id="mailBox" class="mailBox" :placeholder=placeholder spellcheck="false" v-model="val" @input="search" @focus="focus" @blur="blur">
+  <div class="autoComplete">
+    <div class="box-container" :class="{'box_active': canSubscribe}">
+      <input id="box" class="box" spellcheck="false" maxlength="60" :placeholder=placeholder v-model="val" @input="search" @focus="focus" @blur="blur">
       <i class="clean-btn" v-show="showCleanBtn" @mousedown="cleanVal"></i>
-      <ul class="mailList" :class="showList?'showList':''" v-show="searching && filteredList && filteredList.length!=0">
-        <li class="mailItem" v-for="(item, index) in filteredList" :key="index" @mousedown="confirm(item)">
-          <span>{{item}}</span>
+      <ul class="list" :class="{'showList':showList}" v-show="showList">
+        <li class="item" v-for="(item, index) in filteredList" :key="index" @mousedown="confirm(item)">
+          <span class="text-99">{{item.prefix}}</span><span>{{item.suffix}}</span>
         </li>
       </ul>
-      <p class="invalid" v-if="valid">{{invalidMessage}}</p>
+      <p class="invalid" v-if="!valid">{{invalidMsg}}</p>
     </div>
     <button class="subscribe" :class="{'subscribe_active': canSubscribe}">
       <span>Subscribe</span>
@@ -20,24 +20,21 @@
 export default {
   name: 'auto-complete-box',
   props: {
-    invalidMessage: {
-      type: String,
-      default: ''
-    },
-    checkFn: {
-      type: Function,
-      default: function () {
-        return true
-      }
-    },
+    // 搜索类型 如 email
     searchType: {
       type: Object,
       required: true
+    },
+    // 非法提示字符串
+    invalidMsg: {
+      type: String,
+      default: ''
     },
     placeholder: {
       type: String,
       default: ''
     },
+    // 下拉框个数
     showNum: {
       type: Number,
       default: 4
@@ -52,35 +49,46 @@ export default {
     }
   },
   methods: {
+    // 搜索提示方法
     search: function () {
       this.showCleanBtn = true
       this.searchType.search(this)
     },
+    // 点击提示框
     confirm: function (item) {
-      this.val = item
+      this.val = item.prefix + item.suffix
       this.searching = false
     },
+    // 清除输入框
     cleanVal: function () {
       this.val = ''
     },
+    // 输入框获得焦点
     focus: function () {
       if (this.val.length === '') return
       this.showCleanBtn = true
     },
+    // 输入框失去焦点
     blur: function () {
       this.showCleanBtn = false
       this.filteredList = []
     }
   },
   computed: {
+    // 输入是否符合要求
     valid: function () {
-      return !this.checkFn(this.val)
+      if (this.invalidMsg) {
+        return this.searchType.checkFn(this.val)
+      }
+      return false
     },
+    // 是否能订阅
     canSubscribe: function () {
-      return this.val.indexOf('@') > -1
+      return this.searchType.canSubscribe(this.val)
     },
+    // 列表是否展开
     showList: function () {
-      return this.filteredList && this.filteredList.length > 0
+      return this.searching && this.filteredList && this.filteredList.length > 0
     }
   }
 }
@@ -88,19 +96,19 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.mailContainer{
+.autoComplete{
   position:relative;
-  width:100%;
+  width:570px;
   text-align:left;
-  .mail{
+  .box-container{
     position:relative;
     width:100%;
     transition:width .5s;
   }
-  .mail_active{
+  .box_active{
     width:75%;
   }
-  .mailBox{
+  .box{
     box-sizing:border-box;
     width:100%;
     height:40px;
@@ -141,7 +149,7 @@ export default {
       transform:rotate(-45deg);
     }
   }
-  .mailList{
+  .list{
     position:absolute;
     top:40px;
     left:0;
@@ -154,8 +162,7 @@ export default {
     background-color:#fff;
     z-index:1000;
     overflow:hidden;
-    transition:height .4s ease;
-    .mailItem{
+    .item{
       box-sizing:border-box;
       list-style:none;
       width:100%;
@@ -172,7 +179,7 @@ export default {
     }
   }
   .showList{
-    animation:toggle-down .3s ease forwards;
+    animation:toggle-down .5s ease-in-out forwards;
   }
   .invalid{
     position:absolute;
@@ -185,7 +192,10 @@ export default {
     position:absolute;
     top:0;
     right:0;
-    padding:10px 20px;
+    width:110px;
+    height:40px;
+    line-height:40px;
+    text-align:center;
     border:1px solid #fff;
     outline:none;
     background-color:transparent;
@@ -218,9 +228,12 @@ export default {
     opacity:1;
   }
 }
+.text-99{
+	color:#999;
+}
 @keyframes toggle-down{
   100%{
-    max-height:160px;
+    max-height:400px;
   }
 }
 </style>

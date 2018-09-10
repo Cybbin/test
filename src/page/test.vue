@@ -2,26 +2,24 @@
   <section class="section-subscribe">
     <img src="https://image01.oneplus.net/shop/201805/25/503/9e37332d0a3afc2bc93bc568931c5faf.jpg" alt="Subscribe Background">
     <div class="wrap">
-      <mail :searchType=searchType :invalidMessage=invalidMailMessage :checkFn=checkMailFn :placeholder=placeholder :showNum=showNum></mail>
+      <auto-complete :searchType=searchType :invalidMsg=invalidMailMsg :placeholder=placeholder :showNum=showNum></auto-complete>
     </div>
   </section>
 </template>
 
 <script>
-import mail from './mail/mail.vue'
-import { checkMail } from '../assets/common/validate/index.js'
-import email from './mail/searchType/email.js'
+import autoComplete from '@/components/autoComplete/auto-complete.vue'
+import email from '@/components/autoComplete/searchType/email.js'
 export default {
   name: 'HelloWorld',
   components: {
-    mail
+    autoComplete
   },
   data () {
     return {
       searchType: email,
-      invalidMailMessage: 'Invalid email address. Please retry.',
+      invalidMailMsg: 'Invalid email address. Please retry.',
       placeholder: 'Email address',
-      checkMailFn: checkMail,
       showNum: 5
     }
   }
@@ -45,7 +43,6 @@ export default {
       top:50%;
       left:50%;
       transform:translate3d(-50%,-50%,0);
-      width:570px;
     }
   }
 </style>

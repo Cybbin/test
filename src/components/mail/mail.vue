@@ -1,11 +1,11 @@
 <template>
   <div class="mailContainer">
     <div class="mail" :class="{'mail_active': canSubscribe}">
-      <input id="mailBox" class="mailBox" :placeholder=placeholder spellcheck="false" v-model="val" @input="search" ref="mailBox" @focus="focus" @blur="blur">
-      <label for="mailBox" class="clean-btn" v-show="showCleanBtn" @click="cleanVal"></label>
-      <ul class="mailList" :class="showList&&showCleanBtn?'showList':''" v-show="searching && filteredList && filteredList.length!=0">
-        <li class="mailItem" v-for="item in filteredList" :key="item" @click="confirm(item)">
-          {{item}}
+      <input id="mailBox" class="mailBox" :placeholder=placeholder spellcheck="false" v-model="val" @input="search" @focus="focus" @blur="blur">
+      <i class="clean-btn" v-show="showCleanBtn" @mousedown="cleanVal"></i>
+      <ul class="mailList" :class="showList?'showList':''" v-show="searching && filteredList && filteredList.length!=0">
+        <li class="mailItem" v-for="(item, index) in filteredList" :key="index" @mousedown="confirm(item)">
+          <span>{{item}}</span>
         </li>
       </ul>
       <p class="invalid" v-if="valid">{{invalidMessage}}</p>
@@ -27,7 +27,7 @@ export default {
     checkFn: {
       type: Function,
       default: function () {
-        return false
+        return true
       }
     },
     searchType: {
@@ -37,6 +37,10 @@ export default {
     placeholder: {
       type: String,
       default: ''
+    },
+    showNum: {
+      type: Number,
+      default: 4
     }
   },
   data () {
@@ -64,10 +68,8 @@ export default {
       this.showCleanBtn = true
     },
     blur: function () {
-      let that = this
-      setTimeout(function () {
-        that.showCleanBtn = false
-      }, 100)
+      this.showCleanBtn = false
+      this.filteredList = []
     }
   },
   computed: {

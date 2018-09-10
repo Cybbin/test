@@ -10,7 +10,7 @@ export default {
     },
     {
       domain: 'yahoo',
-      suffix: ['com', 'co.uk', 'in', 'co.in']
+      suffix: ['com', 'co.uk', 'in', 'co.in', 'a', 'ab', 'abc', 'abcd', 'abcde']
     },
     {
       domain: 'outlook',
@@ -19,11 +19,15 @@ export default {
     {
       domain: 'qq',
       suffix: ['com']
+    },
+    {
+      domain: '163',
+      suffix: ['com']
     }
   ],
   // 搜索
   search: function (that) {
-    // email 为此js导出模块， that 为组件
+    // email 为此js导出模块， that 为调用此文件的组件
     let email = this
     // val 为输入框的值
     let val = that.val
@@ -54,20 +58,20 @@ export default {
         })
       // @ 后没有字符时显示初始列表
       } else {
-        resultList = email.getDefaultList()
+        resultList = email.getDefaultList(that.showNum)
       }
     // 输入框没有 @ 时，显示初始列表
     } else {
       prefix = val.trim()
-      resultList = email.getDefaultList()
+      resultList = email.getDefaultList(that.showNum)
     }
     // 渲染提示结果列表
     resultList.forEach(function (ele, index) {
       that.filteredList[index] = prefix + ele
     })
-    // 只显示4个选项
-    if (that.filteredList.length > 4) {
-      that.filteredList = that.filteredList.slice(0, 4)
+    // 只显示 showNum 个选项
+    if (that.filteredList.length > that.showNum) {
+      that.filteredList = that.filteredList.slice(0, that.showNum)
     // 完整输入时提示框消失
     } else if (that.filteredList.length === 1) {
       if (val === that.filteredList[0]) {
@@ -90,13 +94,14 @@ export default {
     return allList
   },
   // 获取初始列表
-  getDefaultList: function () {
+  getDefaultList: function (showNum) {
     let that = this
     let defaultList = []
     for (let i in that.list) {
-      if (i > 3) break
+      if (i >= showNum) break
       defaultList.push('@' + that.list[i].domain + '.' + that.list[i].suffix[0])
     }
+    console.log(defaultList)
     return defaultList
   }
 }

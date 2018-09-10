@@ -2,7 +2,7 @@
   <section class="section-subscribe">
     <img src="https://image01.oneplus.net/shop/201805/25/503/9e37332d0a3afc2bc93bc568931c5faf.jpg" alt="Subscribe Background">
     <div class="wrap">
-      <mail :searchType=searchType :invalidMessage=invalidMailMessage :checkFn=checkMailFn :placeholder=placeholder></mail>
+      <mail :searchType=searchType :invalidMessage=invalidMailMessage :checkFn=checkMailFn :placeholder=placeholder :showNum=showNum></mail>
     </div>
   </section>
 </template>
@@ -21,7 +21,8 @@ export default {
       searchType: email,
       invalidMailMessage: 'Invalid email address. Please retry.',
       placeholder: 'Email address',
-      checkMailFn: checkMail
+      checkMailFn: checkMail,
+      showNum: 5
     }
   }
 }

@@ -113,8 +113,8 @@ export default {
     }
     return defaultList
   },
-  // 判断是否可订阅
-  canSubscribe: function (val) {
+  // 判断是否可提交
+  canSubmit: function (val) {
     return val.indexOf('@') > -1
   },
   checkFn: checkMail

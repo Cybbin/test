@@ -1,6 +1,6 @@
 <template>
   <div class="autoComplete">
-    <div class="box-container" :class="{'box_active': canSubscribe}">
+    <div class="box-container" :class="{'box_active': canSubmit}">
       <input id="box" class="box" spellcheck="false" maxlength="60" :placeholder=placeholder v-model="val" @input="search" @focus="focus" @blur="blur">
       <i class="clean-btn" v-show="showCleanBtn" @mousedown="cleanVal"></i>
       <ul class="list" :class="{'showList':showList}" v-show="showList">
@@ -10,8 +10,8 @@
       </ul>
       <p class="invalid" v-if="!valid">{{invalidMsg}}</p>
     </div>
-    <button class="subscribe" :class="{'subscribe_active': canSubscribe}">
-      <span>Subscribe</span>
+    <button class="submit" :class="{'submit_active': canSubmit}" @click="submit">
+      <span>{{submitText}}</span>
     </button>
   </div>
 </template>
@@ -38,6 +38,15 @@ export default {
     showNum: {
       type: Number,
       default: 4
+    },
+    // 提交方法
+    submitFn: {
+      type: Function
+    },
+    // 提交文本
+    submitText: {
+      type: String,
+      default: 'Submit'
     }
   },
   data () {
@@ -72,6 +81,11 @@ export default {
     blur: function () {
       this.showCleanBtn = false
       this.filteredList = []
+    },
+    submit: function () {
+      if (this.submitFn) {
+        this.submitFn()
+      }
     }
   },
   computed: {
@@ -83,8 +97,8 @@ export default {
       return false
     },
     // 是否能订阅
-    canSubscribe: function () {
-      return this.searchType.canSubscribe(this.val)
+    canSubmit: function () {
+      return this.searchType.canSubmit(this.val) && this.submitFn
     },
     // 列表是否展开
     showList: function () {
@@ -188,7 +202,7 @@ export default {
     color:#eb0028;
     font-size:14px;
   }
-  .subscribe{
+  .submit{
     position:absolute;
     top:0;
     right:0;
@@ -222,7 +236,7 @@ export default {
       width:100%;
     }
   }
-  .subscribe_active{
+  .submit_active{
     transform:translate3d(0,0,0);
     cursor:pointer;
     opacity:1;

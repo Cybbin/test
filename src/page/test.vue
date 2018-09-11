@@ -2,7 +2,7 @@
   <section class="section-subscribe">
     <img src="https://image01.oneplus.net/shop/201805/25/503/9e37332d0a3afc2bc93bc568931c5faf.jpg" alt="Subscribe Background">
     <div class="wrap">
-      <auto-complete :searchType=searchType :invalidMsg=invalidMailMsg :placeholder=placeholder :showNum=showNum></auto-complete>
+      <auto-complete :search-type="searchType" :invalid-msg="invalidMailMsg" :placeholder="placeholder" :show-num="showNum" :submit-fn="submitFn" :submit-text="submitText"></auto-complete>
     </div>
   </section>
 </template>
@@ -20,7 +20,13 @@ export default {
       searchType: email,
       invalidMailMsg: 'Invalid email address. Please retry.',
       placeholder: 'Email address',
-      showNum: 5
+      showNum: 5,
+      submitText: 'Subscribe'
+    }
+  },
+  methods: {
+    submitFn: function () {
+      alert('Submit success!')
     }
   }
 }
